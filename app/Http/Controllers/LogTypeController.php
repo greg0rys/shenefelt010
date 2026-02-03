@@ -13,7 +13,8 @@ class LogTypeController extends Controller
      */
     public function index()
     {
-        //
+        $logTypes = LogType::all();
+        return view('logTypes.index', compact('logTypes'));
     }
 
     /**

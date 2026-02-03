@@ -57,4 +57,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(userPost::class, 'user_id', 'id');
     }
+
+
+    public function reset_user_info(string $first_name = 'nan', string $last_name = 'given'): void
+    {
+        $this->first_name = $first_name;
+        $this->last_name = $last_name;
+        $this->full_name = $first_name . ' ' . $last_name;
+        $this->email = strtolower("{$this->first_name}@{$this->last_name}.org");
+    }
 }

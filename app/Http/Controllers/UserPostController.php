@@ -13,7 +13,12 @@ class UserPostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = UserPost::with('user')        // 1. Eager load 'user' FIRST (efficient SQL)
+        ->orderBy('created_at', 'desc') // 2. Sort in Database (faster than PHP)
+        ->get()                    // 3. Execute query
+        ->groupBy('user_id');      // 4. Group results for the view
+
+        return view('posts.index', ['posts' => $posts]);
     }
 
     /**
