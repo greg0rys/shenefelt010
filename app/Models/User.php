@@ -30,6 +30,10 @@ class User extends Authenticatable
         'total_break_time',
         'action_type',
         'user_id',
+        'title',
+        'body',
+        'start_time',
+        'end_time',
     ];
 
     /**
