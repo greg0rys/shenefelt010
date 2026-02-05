@@ -26,4 +26,6 @@ class UserAction extends Model
 		// this
         return $this->belongsTo(LogType::class, 'action_type', 'id');
     }
+
+
 }

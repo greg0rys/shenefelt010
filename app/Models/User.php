@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Action;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +25,11 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'password',
+        'reason',
+        'total_time_worked',
+        'total_break_time',
+        'action_type',
+        'user_id',
     ];
 
     /**
@@ -48,6 +55,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function ban(): HasOne
+    {
+        return $this->hasOne(Ban::class);
+    }
+
     public function actions(): HasMany
     {
         return $this->hasMany(UserAction::class, 'user_id', 'id');
@@ -59,11 +71,21 @@ class User extends Authenticatable
     }
 
 
-    public function reset_user_info(string $first_name = 'nan', string $last_name = 'given'): void
+    public function generate_user_info(string $first_name = 'nan', string $last_name = 'given'): void
     {
         $this->first_name = $first_name;
         $this->last_name = $last_name;
         $this->full_name = $first_name . ' ' . $last_name;
         $this->email = strtolower("{$this->first_name}@{$this->last_name}.org");
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->ban !== null;
+    }
+
+    public function time_entry(): HasMany
+    {
+        return $this->hasMany(UserClockIn::class);
     }
 }
