@@ -14,7 +14,9 @@ class UserAction extends Model
 
     protected $fillable = [
         'user_id',
-        'action_type',
+        'action_name',
+        'action_success',
+        'item_id'
     ];
 
     public function user(): BelongsTo

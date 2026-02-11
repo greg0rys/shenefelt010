@@ -22,7 +22,9 @@ class StoreUserActionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_id' => 'required|integer|exists:users,id',
+            'action_name' => 'required|string',
+            'action_success' => 'required|string',
         ];
     }
 }

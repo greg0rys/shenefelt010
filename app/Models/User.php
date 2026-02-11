@@ -3,7 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, SoftDeletes;
 
     /**
@@ -26,25 +28,26 @@ class User extends Authenticatable
         'last_name',
         'password',
         'reason',
-        'total_time_worked',
-        'total_break_time',
         'action_type',
         'user_id',
         'title',
         'body',
         'start_time',
         'end_time',
+        'system_role',
+        'company_id',
+        'item_id',
+        'inventory_id',
+        'name',
     ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verified_at',
+        'deleted_at',
     ];
+
+
 
     /**
      * Get the attributes that should be cast.
@@ -74,6 +77,26 @@ class User extends Authenticatable
         return $this->hasMany(userPost::class, 'user_id', 'id');
     }
 
+    public function items(): HasMany
+    {
+        return $this->hasMany(InventoryItem::class, 'user_id', 'id');
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'id');
+    }
+
+    public function time_entry(): HasMany
+    {
+        return $this->hasMany(UserClockIn::class);
+    }
+
+    public function inventory_action(): HasMany
+    {
+        return $this->hasMany(InventoryActions::class, 'user_id', 'id');
+    }
+
 
     public function generate_user_info(string $first_name = 'nan', string $last_name = 'given'): void
     {
@@ -81,6 +104,7 @@ class User extends Authenticatable
         $this->last_name = $last_name;
         $this->full_name = $first_name . ' ' . $last_name;
         $this->email = strtolower("{$this->first_name}@{$this->last_name}.org");
+        $this->save();
     }
 
     public function isBlocked(): bool
@@ -88,8 +112,11 @@ class User extends Authenticatable
         return $this->ban !== null;
     }
 
-    public function time_entry(): HasMany
+    public function unblock(): bool
     {
-        return $this->hasMany(UserClockIn::class);
+        return $this->ban()->delete();
     }
+
+
+
 }
