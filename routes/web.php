@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [IndexController::class, 'index']);
 
+Route::delete('/posts/{post}/del1', [UserPostController::class, 'destroy'])->name('destroy');
+
+Route::get('/posts/deleted-posts', [UserPostController::class, 'deletedPosts'])->name('deletedPosts');
 Route::resource('posts', UserPostController::class);
 Route::resource('logTypes', LogTypeController::class);
 

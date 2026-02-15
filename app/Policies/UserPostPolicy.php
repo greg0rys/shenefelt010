@@ -45,7 +45,7 @@ class UserPostPolicy
      */
     public function delete(User $user, UserPost $userPost): bool
     {
-        return false;
+        return true;
     }
 
     /**

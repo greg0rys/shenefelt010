@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UserPost;
 use App\Http\Requests\StoreUserPostRequest;
 use App\Http\Requests\UpdateUserPostRequest;
+use Illuminate\Support\Str;
 
 class UserPostController extends Controller
 {
@@ -16,7 +17,7 @@ class UserPostController extends Controller
         $posts = UserPost::with('user')        // 1. Eager load 'user' FIRST (efficient SQL)
         ->orderBy('created_at', 'desc') // 2. Sort in Database (faster than PHP)
         ->get()                    // 3. Execute query
-        ->groupBy('user_id');      // 4. Group results for the view
+        ->groupBy('user_id');     // 4. Group results for the view
 
         return view('posts.index', ['posts' => $posts]);
     }
@@ -26,7 +27,7 @@ class UserPostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
@@ -34,38 +35,62 @@ class UserPostController extends Controller
      */
     public function store(StoreUserPostRequest $request)
     {
-        //
+        $data = $request->validated(); // extract validated data
+        $post = UserPost::create($data); // create the post FIRST then use the slug() relationship
+
+        $post->slug()->create(['slug' => Str::slug($post->title, '-'), 'post_id' => $post->id]);
+
+        return redirect()->route('posts.show', $post);
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(UserPost $userPost)
+    public function show(UserPost $post)
     {
-        //
+        $post->load('slug');
+        return view('posts.show', ['post' => $post]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(UserPost $userPost)
+    public function edit(UserPost $post)
     {
-        //
+        return view('posts.edit', ['post' => $post]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserPostRequest $request, UserPost $userPost)
+    public function update(UpdateUserPostRequest $request, UserPost $post)
     {
-        //
+        $post->update($request->validated());
+        $post->updateSlug();
+
+        return redirect()->route('posts.show', $post);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UserPost $userPost)
+    public function destroy(UserPost $post)
     {
-        //
+        // 1. Delete the post
+        $post->delete();
+
+        // 2. Return JSON (API Style)
+        return response()->json([
+            'message' => 'Post deleted successfully',
+            'deleted_id' => $post->id,
+            'remaining_posts' => UserPost::count()
+        ], 200);
+    }
+
+    public function deletedPosts()
+    {
+        $posts = UserPost::onlyTrashed()->get();
+        return view('posts.deleted', ['posts' => $posts]);
     }
 }

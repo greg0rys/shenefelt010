@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class UserPost extends Model
@@ -18,20 +19,23 @@ class UserPost extends Model
         'title',
         'body',
         'slug',
+        'post_id',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
 
-        static::creating(function ($post){
-            $post->slug = Str::slug($post->title);
-        });
-    }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function slug(): HasOne
+    {
+        return $this->hasOne(PostSlug::class, 'post_id', 'id');
+    }
+
+    public function updateSlug()
+    {
+        $this->slug()->update(['slug' => Str::slug($this->title, '-')]);
+    }
 }

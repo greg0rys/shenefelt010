@@ -47,7 +47,8 @@ class User extends Authenticatable
         'deleted_at',
     ];
 
-
+    // roles as defined for users in the db. eloquent orm is not meant to handle these without the use of an enum.
+    private array $roles = ['admin', 'user', 'vendor', 'contract employee'];
 
     /**
      * Get the attributes that should be cast.
@@ -114,9 +115,18 @@ class User extends Authenticatable
 
     public function unblock(): bool
     {
-        return $this->ban()->delete();
+        // the need for multi bans needs to be turned off
+        return $this->ban()
+            ->delete();
     }
 
+    public function update_system_role(string $role): bool
+    {
+        if (!in_array($role, $this->roles))
+            $role = 'user';
+
+        return $this->update(['system_role' => $role]);
+    }
 
 
 }
