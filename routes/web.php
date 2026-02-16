@@ -16,7 +16,7 @@ use App\Http\Controllers\UserPostController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 /*
