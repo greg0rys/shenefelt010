@@ -1,27 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deleted Users Log</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <style>
-        /* Muted red theme for a read-only archive feel */
-        :root {
-            --pico-primary: #8d2626;
-            --pico-primary-background: #8d2626;
-            --pico-primary-hover: #721c1c;
-        }
-    </style>
-</head>
-<body>
+@extends('layouts.app')
 
-<main class="container">
+@section('title', 'Deleted Users')
 
+@section('content')
     <hgroup>
         <h1>Deleted Users Log</h1>
         <p>A read-only history of deactivated accounts.</p>
     </hgroup>
+
+    <nav>
+        <ul>
+            <li></li>
+        </ul>
+        <ul>
+            <li><a href="{{ route('users.index') }}" role="button" class="secondary">Back to Active Users</a></li>
+        </ul>
+    </nav>
 
     <section>
         @if($users->isEmpty())
@@ -46,9 +40,9 @@
                             <td>{{ $user->full_name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>
-                                    <span data-tooltip="{{ $user->deleted_at->toDayDateTimeString() }}">
-                                        {{ $user->deleted_at->format('M d, Y') }}
-                                    </span>
+                                <span data-tooltip="{{ $user->deleted_at->toDayDateTimeString() }}">
+                                    {{ $user->deleted_at->format('M d, Y') }}
+                                </span>
                             </td>
                         </tr>
                     @endforeach
@@ -57,12 +51,4 @@
             </figure>
         @endif
     </section>
-
-    <footer>
-        <a href="/" role="button" class="secondary outline">Back to Home</a>
-    </footer>
-
-</main>
-
-</body>
-</html>
+@endsection

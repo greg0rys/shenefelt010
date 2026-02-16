@@ -38,7 +38,8 @@ class UserPostController extends Controller
         $data = $request->validated(); // extract validated data
         $post = UserPost::create($data); // create the post FIRST then use the slug() relationship
 
-        $post->slug()->create(['slug' => Str::slug($post->title, '-'), 'post_id' => $post->id]);
+        $post->slug()
+            ->create(['slug' => Str::slug($post->title, '-'), 'post_id' => $post->id]);
 
         return redirect()->route('posts.show', $post);
 
@@ -69,7 +70,9 @@ class UserPostController extends Controller
         $post->update($request->validated());
         $post->updateSlug();
 
-        return redirect()->route('posts.show', $post);
+        return redirect()
+            ->route('posts.show', $post)
+            ->with('success', 'Post updated successfully.');
     }
 
     /**
@@ -77,20 +80,20 @@ class UserPostController extends Controller
      */
     public function destroy(UserPost $post)
     {
-        // 1. Delete the post
+        $postId = $post->id; // quick store so we can output the id on success
+        // 1. Delete the post softly
         $post->delete();
 
-        // 2. Return JSON (API Style)
-        return response()->json([
-            'message' => 'Post deleted successfully',
-            'deleted_id' => $post->id,
-            'remaining_posts' => UserPost::count()
-        ], 200);
+        // Redirect with success
+        return redirect()
+            ->route('posts.index')
+            ->with('success', "Post deleted successfully. Id: $postId");
     }
 
     public function deletedPosts()
     {
-        $posts = UserPost::onlyTrashed()->get();
+        $posts = UserPost::onlyTrashed()
+            ->get();
         return view('posts.deleted', ['posts' => $posts]);
     }
 }

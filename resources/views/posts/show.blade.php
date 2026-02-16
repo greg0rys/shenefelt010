@@ -1,38 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Post {{$post->id ?? 'err'}}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-</head>
-<body>
-<main class="container">
-    <figure>
-        <table>
-            <thead>
-                <th>Title</th>
-                <th>Body</th>
-                <th>Slug</th>
-            <th>
-                User Publisher
-            </th>
-            <th>
-                Created At
-            </th>
-            </thead>
+@extends('layouts.app')
 
-            <tbody>
-            <tr>
-                <td>{{$post->title}}</td>
-                <td>{{$post->body}}</td>
-                <td>{{ $post->slug->slug ?? 'No Slug' }}</td>
-                <td>{{$post->user->full_name}}</td>
-                <td>{{ $post->created_at->setTimezone('America/Los_Angeles')->format('M d-Y') }}</td>
-            </tr>
-            </tbody>
-        </table>
-    </figure>
-</main>
-</body>
-</html>
+@section('title', $post->title)
+
+@section('content')
+    <nav>
+        <ul>
+            <li><strong>Viewing Post</strong></li>
+        </ul>
+        <ul>
+            <li><a href="{{ route('posts.index') }}" class="secondary">Back to List</a></li>
+            <li><a href="{{ route('posts.edit', $post) }}" role="button" class="outline">Edit</a></li>
+        </ul>
+    </nav>
+
+    <article>
+        <header>
+            <hgroup>
+                <h1>{{ $post->title }}</h1>
+                <p>By {{ $post->user->full_name }} on {{ $post->created_at->format('M d, Y') }}</p>
+            </hgroup>
+        </header>
+
+        <p>{{ $post->body }}</p>
+
+        <footer>
+            <small>Slug: {{ $post->slug->slug ?? 'N/A' }}</small>
+        </footer>
+    </article>
+@endsection

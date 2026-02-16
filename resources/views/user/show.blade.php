@@ -1,32 +1,43 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+@extends('layouts.app')
 
-    <title>Viewing {{$user->full_name}}</title>
-</head>
-<body>
-    <section>
-        <article>
-            <table>
-                <thead>
-                <th>User</th>
-                <th>System Role</th>
-                <th>Ban Reason</th>
-                <th>Works At</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{$user->full_name}}</td>
-                        <td>{{$user->system_role}}</td>
-                        <td>{{ucwords($user->ban->reason)}}</td>
-                        <td>{{$user->company->name ?? 'None Assigned'}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </article>
-    </section>
-</body>
-</html>
+@section('title', $user->full_name)
+
+@section('content')
+    <nav>
+        <ul>
+            <li><strong>Viewing User</strong></li>
+        </ul>
+        <ul>
+            <li><a href="{{ route('users.index') }}" class="secondary">Back to List</a></li>
+            <li><a href="{{ route('users.edit', $user) }}" role="button" class="outline">Edit</a></li>
+        </ul>
+    </nav>
+
+    <article>
+        <header>
+            <hgroup>
+                <h1>{{ $user->full_name }}</h1>
+                <p>Role: {{ $user->system_role ?? 'User' }}</p>
+            </hgroup>
+        </header>
+
+        <div class="grid">
+            <div>
+                <strong>Email:</strong> {{ $user->email }}
+            </div>
+            <div>
+                <strong>Company:</strong> {{ $user->company->name ?? 'None Assigned' }}
+            </div>
+            <div>
+                <strong>Joined:</strong> {{ $user->created_at->format('M d, Y') }}
+            </div>
+        </div>
+
+        @if($user->ban)
+            <footer style="background-color: #ffe6e6; border-top: 1px solid #ffcccc;">
+                <strong>⚠️ Banned</strong><br>
+                Reason: {{ ucwords($user->ban->reason) }}
+            </footer>
+        @endif
+    </article>
+@endsection
