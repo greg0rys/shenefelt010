@@ -39,6 +39,7 @@ class User extends Authenticatable
         'item_id',
         'inventory_id',
         'name',
+        'is_admin'
     ];
     protected $hidden = [
         'password',

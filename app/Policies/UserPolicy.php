@@ -21,23 +21,27 @@ class UserPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->is_admin;
     }
 
     public function update(User $user, User $model): bool
     {
-return true;
+        return $user->is_admin;
     }
 
     public function delete(User $user, User $model): bool
     {
+       return $user->is_admin;
     }
 
     public function restore(User $user, User $model): bool
     {
+        return $user->is_admin;
     }
 
     public function forceDelete(User $user, User $model): bool
     {
+        return $user->is_admin;
+
     }
 }
