@@ -1,25 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>All Posts</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+@extends('layouts.app')
+
+@section('title', 'All Posts')
+
+@push('styles')
     <style>
         .actions-cell {
             text-align: right;
         }
         .delete-btn {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
             border: none;
             margin-bottom: 0;
-            color: #d93526; /* Red text for warning */
+            color: #d93526; /* Warning Red */
+            width: auto;
         }
     </style>
-</head>
-<body>
-<main class="container">
+@endpush
+
+@section('content')
     <nav>
         <ul>
             <li><strong>All Posts</strong></li>
@@ -28,12 +27,6 @@
             <li><a href="{{ route('posts.create') }}" role="button">New Post</a></li>
         </ul>
     </nav>
-
-    @if(session('success'))
-        <article style="background-color: #e6ffe6; border: 1px solid #ccffcc; color: #006600; padding: 1rem; margin-bottom: 2rem;">
-            {{ session('success') }}
-        </article>
-    @endif
 
     <figure>
         <table role="grid">
@@ -46,22 +39,18 @@
             </tr>
             </thead>
 
-            {{-- 1. Loop through the Groups (Key = UserID, Value = List of Posts) --}}
+            {{-- Loop through groups (Multiple <tbody> is valid HTML and great for grouping) --}}
             @foreach($posts as $userId => $userPosts)
-
-                {{-- 2. Create a specific body for this user group to keep them visually together --}}
                 <tbody>
-                <tr style="background-color: var(--pico-card-background-color);">
-                    <td colspan="4">
+                <tr style="background-color: var(--pico-muted-border-color);">
+                    <td colspan="4" style="color: var(--pico-contrast-color);">
                         <strong>
-                            {{-- Get the user info from the first post in the group --}}
                             👤 {{ $userPosts->first()->user->full_name }}
                         </strong>
-                        <small>(ID: {{ $userId }})</small>
+                        <small class="secondary">(ID: {{ $userId }})</small>
                     </td>
                 </tr>
 
-                {{-- 3. Inner Loop: Iterate through the actual posts for this user --}}
                 @foreach($userPosts as $post)
                     <tr>
                         <td></td>
@@ -72,10 +61,9 @@
                             </a>
                         </td>
                         <td class="actions-cell">
-                            {{-- DELETE Form --}}
                             <form action="{{ route('posts.destroy', $post->id) }}"
                                   method="POST"
-                                  onsubmit="return confirm('Are you sure you want to delete this post?');"
+                                  onsubmit="return confirm('Are you sure?');"
                                   style="display:inline; margin:0;">
                                 @csrf
                                 @method('DELETE')
@@ -87,10 +75,7 @@
                     </tr>
                 @endforeach
                 </tbody>
-
             @endforeach
         </table>
     </figure>
-</main>
-</body>
-</html>
+@endsection

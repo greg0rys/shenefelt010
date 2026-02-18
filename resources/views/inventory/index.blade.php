@@ -1,71 +1,99 @@
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>All Posts</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    </head>
+@extends('layouts.app')
 
-    <style>
-        *{
-            font-family: "Verdana";
-        }
+@section('title', 'All Items')
 
-        #assigned_to
-        {
-            font-style: italic;
-            font-weight: bolder;
-            color: chartreuse;
-            background: black;
-            padding: 2px;
-        }
-    </style>
-<body>
-<section>
-    <hgroup>
-        <h4>All Items</h4>
-        <h6>Total Items: {{$allItems->isNotEmpty() ? $allItems->count() :"No Items"}}</h6>
-    </hgroup>
-    @forelse($allItems as $i)
-        <article class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
-            <div class="p-5 border-b border-gray-100">
-                <div class="flex justify-between items-start mb-2">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 uppercase tracking-wide">
-                Type: {{ $i->device_type }}
-            </span>
-                    <span class="h-2 w-2 rounded-full bg-green-500"></span>
+@section('content')
+    <nav>
+        <ul>
+            <li>
+                <hgroup>
+                    <h1>All Items</h1>
+                    <p>Total Items: {{ $allItems->count() }}</p>
+                </hgroup>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <a href="{{ route('items.create') }}" role="button">Create New Item</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--pico-block-spacing-vertical);">
+
+        @forelse($allItems as $i)
+            <article>
+                <header>
+                    <nav>
+                        <ul>
+                            <li><strong>{{ $i->model }}</strong></li>
+                        </ul>
+                        <ul>
+                            <li>
+                                <span data-tooltip="Device Type" data-placement="left">
+                                    {{ $i->device_type }}
+                                </span>
+                            </li>
+                        </ul>
+                    </nav>
+                </header>
+
+                <p>{{ $i->description }}</p>
+
+                <div class="grid">
+                    <div>
+                        <small class="secondary">Location</small><br>
+                        <span>{{ $i->location ?? 'N/A' }}</span>
+                    </div>
+                    <div>
+                        <small class="secondary">Client</small><br>
+                        <span>{{ $i->client ?? 'N/A' }}</span>
+                    </div>
                 </div>
-                <h3 class="text-lg font-bold text-gray-900 leading-tight">
-                    Model: {{ $i->model }}
-                </h3>
-                <p class="mt-1 text-sm text-gray-500 line-clamp-2" title="{{ $i->description }}">
-                    Description {{ $i->description }}
-                </p>
-            </div>
 
-            <div class="px-5 py-3 bg-gray-50 grid grid-cols-2 gap-y-2 text-sm">
-                <div>
-                    <span class="block text-xs text-gray-400 uppercase font-semibold">Location</span>
-                    <span class="font-medium text-gray-700">{{ $i->location ?? 'N/A' }}</span>
-                </div>
-                <div>
-                    <span class="block text-xs text-gray-400 uppercase font-semibold">Client</span>
-                    <span class="font-medium text-gray-700">{{ $i->client ?? 'N/A' }}</span>
-                </div>
-            </div>
+                <footer>
+                    <div class="grid" style="margin-bottom: 1.5rem;">
+                        <div>
+                            <small class="secondary">Assigned To:</small>
+                        </div>
+                        <div style="text-align: right;">
+                            @if(optional($i->user)->full_name)
+                                <strong>{{ $i->user->full_name }}</strong>
+                            @else
+                                <em>Unassigned</em>
+                            @endif
+                        </div>
+                    </div>
 
-            <div class="px-5 py-3 border-t border-gray-100 bg-white flex items-center justify-between">
-                <span class="text-xs font-medium text-gray-500 uppercase">Assigned To:</span>
-                <span class="text-sm font-semibold text-gray-800" id="assigned_to">
-            {{ optional($i->user)->full_name ?? 'Unassigned' }}
-        </span>
-            </div>
-        </article>
-    @empty
-        <p>nan</p>
-    @endforelse
-</section>
+                    <div style="display: flex; gap: 1rem;">
+                        <a href="{{ route('items.edit', $i->id) }}"
+                           role="button"
+                           class="outline secondary"
+                           style="flex: 1; text-decoration: none; display: flex; justify-content: center; align-items: center;">
+                            Edit
+                        </a>
 
-</body>
-</html>
+                        <form action="{{ route('items.destroy', $i->id) }}"
+                              method="POST"
+                              onsubmit="return confirm('Are you sure you want to delete this item?');"
+                              style="flex: 1; margin-bottom: 0;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="outline contrast"
+                                    style="width: 100%; margin-bottom: 0;">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </footer>
+            </article>
+        @empty
+            <article>
+                <header>No Data</header>
+                No items found in the database.
+            </article>
+        @endforelse
 
+    </div>
+@endsection
