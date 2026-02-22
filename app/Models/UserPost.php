@@ -31,10 +31,6 @@ class UserPost extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function slug(): HasOne
-    {
-        return $this->hasOne(PostSlug::class, 'post_id', 'id');
-    }
 
     public function updateSlug()
     {
