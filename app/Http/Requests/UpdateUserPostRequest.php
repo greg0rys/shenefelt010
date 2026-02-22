@@ -13,13 +13,13 @@ class UpdateUserPostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()->is_admin;
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {

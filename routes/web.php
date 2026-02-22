@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 // Imports at the top
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\InventoryItemController;
@@ -25,42 +26,50 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])
+    ->group(function () {
 
-    // Dashboard
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+        // Dashboard
+        Route::get('/dashboard', function () {
+            return view('dashboard');
+        })
+            ->name('dashboard');
 
-    // Profile Routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        // Profile Routes
+        Route::get('/profile', [ProfileController::class, 'edit'])
+            ->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])
+            ->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])
+            ->name('profile.destroy');
 
-    // --- YOUR APP ROUTES GO HERE ---
+        // --- YOUR APP ROUTES GO HERE ---
 
-    // Posts (Specific routes MUST go before Resource routes)
-    Route::delete('/posts/{post}/del1', [UserPostController::class, 'destroy'])->name('posts.destroy.custom');
-    Route::get('/posts/deleted-posts', [UserPostController::class, 'deletedPosts'])->name('posts.deleted');
-    Route::resource('posts', UserPostController::class);
+        // Posts (Specific routes MUST go before Resource routes)
+        Route::delete('/posts/{post}/del1', [UserPostController::class, 'destroy'])
+            ->name('posts.destroy.custom');
+        Route::get('/posts/deleted-posts', [UserPostController::class, 'deletedPosts'])
+            ->name('posts.deleted');
+        Route::resource('posts', UserPostController::class);
 
-    // Users (Admin check should ideally be here)
-    Route::get('/users/deleted-users', [UserController::class, 'deletedUsers'])->name('users.deleted');
+        // Users (Admin check should ideally be here)
+        Route::get('/users/deleted-users', [UserController::class, 'deletedUsers'])
+            ->name('users.deleted');
 
-    // If you want ONLY admins to see users, add 'admin' middleware here:
-    // Route::middleware('admin')->resource('users', UserController::class);
-    // Otherwise, for standard access:
-    Route::resource('users', UserController::class);
+        // If you want ONLY admins to see users, add 'admin' middleware here:
+        // Route::middleware('admin')->resource('users', UserController::class);
+        // Otherwise, for standard access:
+        Route::resource('users', UserController::class);
 
-    Route::resource('items', InventoryItemController::class);
-    Route::resource('companies', CompanyController::class);
-    Route::resource('logTypes', LogTypeController::class);
+        Route::resource('items', InventoryItemController::class);
+        Route::resource('companies', CompanyController::class);
+        Route::resource('logTypes', LogTypeController::class);
 
-});
+    });
 
 /*
 |--------------------------------------------------------------------------
 | Auth Routes
 |--------------------------------------------------------------------------
 */
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

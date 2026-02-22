@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
+#ObservedBy([UserPostObserver::class])
 class UserPost extends Model
 {
     /** @use HasFactory<\Database\Factories\UserPostFactory> */

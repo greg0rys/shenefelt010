@@ -13,7 +13,7 @@ class UserPostPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->is_admin;
     }
 
     /**
@@ -29,7 +29,7 @@ class UserPostPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->is_admin || $user->is_editor;
     }
 
     /**
