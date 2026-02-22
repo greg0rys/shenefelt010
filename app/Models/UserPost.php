@@ -25,15 +25,13 @@ class UserPost extends Model
     ];
 
 
-
+    /**
+     * @return BelongsTo
+     * Define 1:1 relationship on the user modle for identity
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-
-    public function updateSlug()
-    {
-        $this->slug()->update(['slug' => Str::slug($this->title, '-')]);
-    }
 }
