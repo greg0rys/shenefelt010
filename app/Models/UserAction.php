@@ -18,7 +18,8 @@ class UserAction extends Model
         'action_success',
         'item_id',
         'action',
-        'ip_address'
+        'ip_address',
+        'created_at'
     ];
 
     public function user(): BelongsTo

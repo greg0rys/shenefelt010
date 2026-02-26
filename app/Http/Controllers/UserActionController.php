@@ -14,6 +14,8 @@ class UserActionController extends Controller
     public function index()
     {
         //
+        $all = UserAction::with(['user'])->get();
+        return view('userActions.index', compact('all'));
     }
 
     /**

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserActionController;
 use Illuminate\Support\Facades\Route;
 
 // Imports at the top
@@ -51,6 +52,8 @@ Route::middleware(['auth', 'verified'])
         Route::get('/posts/deleted-posts', [UserPostController::class, 'deletedPosts'])
             ->name('posts.deleted');
         Route::resource('posts', UserPostController::class);
+
+        Route::resource('/userActions', UserActionController::class);
 
         // Users (Admin check should ideally be here)
         Route::get('/users/deleted-users', [UserController::class, 'deletedUsers'])
