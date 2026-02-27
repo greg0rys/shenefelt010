@@ -60,6 +60,24 @@ return [
             'report' => false,
         ],
 
+        /*
+        |--------------------------------------------------------------------------
+        | Custom App Disks
+        |--------------------------------------------------------------------------
+        */
+
+        'processing' => [
+            'driver' => 'local',
+            'root' => storage_path('app/' . env('PROCESSING_DIR', 'processing')),
+            'throw' => false,
+        ],
+
+        'completed' => [
+            'driver' => 'local',
+            'root' => storage_path('app/' . env('COMPLETED_DIR', 'completed')),
+            'throw' => false,
+        ],
+
     ],
 
     /*

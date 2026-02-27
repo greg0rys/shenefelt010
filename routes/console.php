@@ -11,3 +11,5 @@ Artisan::command('inspire', function () {
 
 // Define your scheduled tasks here
 Schedule::command('app:move-file')->daily();
+Schedule::command('app:create-user-log')->daily();
+Schedule::command('app:new-inventory-items')->daily();
