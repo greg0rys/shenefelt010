@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('user_actions_tables', function (Blueprint $table) {
-            $table->dropColumn('action_id');
-            $table->foreignId('action_id')->after('user_id')->nullable()->constrained('user_actions_tables');
+//            $table->dropColumn('action_id');
+//            $table->foreignId('action_id')->after('user_id')->nullable()->constrained('user_actions_tables');
         });
     }
 
